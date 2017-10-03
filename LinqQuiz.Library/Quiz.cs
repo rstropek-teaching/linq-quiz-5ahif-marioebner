@@ -16,7 +16,23 @@ namespace LinqQuiz.Library
         /// </exception>
         public static int[] GetEvenNumbers(int exclusiveUpperLimit)
         {
-            throw new NotImplementedException();
+            if (exclusiveUpperLimit < 1)
+            {
+                throw new ArgumentOutOfRangeException();
+            } else
+            {
+                int[] numbers = new int[exclusiveUpperLimit - 1];
+                for (int i = 0; i < exclusiveUpperLimit - 1; i++)
+                {
+                    numbers[i] = i + 1;
+                }
+
+                int[] numQuery = (from num in numbers
+                                  where (num % 2) == 0
+                                  select num).ToArray();
+
+                return numQuery;
+            }
         }
 
         /// <summary>
@@ -33,7 +49,29 @@ namespace LinqQuiz.Library
         /// </remarks>
         public static int[] GetSquares(int exclusiveUpperLimit)
         {
-            throw new NotImplementedException();
+            if (exclusiveUpperLimit < 1)
+            {
+                return Array.Empty<int>();
+            } else
+            {
+                int[] numbers = new int[exclusiveUpperLimit-1];
+                for (int i = 0; i < exclusiveUpperLimit-1; i++)
+                {
+                    numbers[i] = i + 1;
+                }
+
+                var numQuery = (from num in numbers
+                                where (num % 7) == 0
+                                orderby num descending
+                                select num).ToArray();
+
+                for (int i = 0; i < numQuery.Length; i++)
+                {
+                    numQuery[i] = checked((int)Math.Pow(numQuery[i], 2));
+                }
+
+                return numQuery;
+            }
         }
 
         /// <summary>
@@ -52,9 +90,33 @@ namespace LinqQuiz.Library
         /// </remarks>
         public static FamilySummary[] GetFamilyStatistic(IReadOnlyCollection<IFamily> families)
         {
-            throw new NotImplementedException();
-        }
+            if (families == null)
+            {
+                throw new ArgumentNullException();
+            }
 
+            List<FamilySummary> list = new List<FamilySummary>();
+            decimal averageAge;
+            foreach (var family in families)
+            {
+                if (family.Persons.Count == 0)
+                {
+                    averageAge = 0;
+                }
+                else
+                {
+                    averageAge = family.Persons.Average(p => p.Age);
+                }
+                list.Add(new FamilySummary
+                {
+                    AverageAge = averageAge,
+                    FamilyID = family.ID,
+                    NumberOfFamilyMembers = family.Persons.Count
+                });
+            }
+
+            return list.ToArray();
+        }
         /// <summary>
         /// Returns a statistic about the number of occurrences of letters in a text.
         /// </summary>
@@ -70,7 +132,20 @@ namespace LinqQuiz.Library
         /// </remarks>
         public static (char letter, int numberOfOccurrences)[] GetLetterStatistic(string text)
         {
-            throw new NotImplementedException();
+            char[] textLetters = text.ToUpper().ToCharArray();
+            List<int> letters = Enumerable.Range('A', 'Z').ToList();
+            List<(char letter, int numberOfOccurences)> solution = new List<(char letter, int numberOfOccurences)>();
+
+            foreach(var letter in letters)
+            {
+                var count = textLetters.Count(l => l == letter);
+                if (count > 0)
+                {
+                    solution.Add(((char)letter, count));
+                }
+            }
+
+            return solution.ToArray();
         }
     }
 }
