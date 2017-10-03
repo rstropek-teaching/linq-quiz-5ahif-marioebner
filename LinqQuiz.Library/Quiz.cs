@@ -21,12 +21,14 @@ namespace LinqQuiz.Library
                 throw new ArgumentOutOfRangeException();
             } else
             {
+                // Tip: Use `Enumerable.Range` instead -> no manual loop necessary.
                 int[] numbers = new int[exclusiveUpperLimit - 1];
                 for (int i = 0; i < exclusiveUpperLimit - 1; i++)
                 {
                     numbers[i] = i + 1;
                 }
 
+                // General tip: Use `var` instead of `int[]` to make code easier to read and maintain.
                 int[] numQuery = (from num in numbers
                                   where (num % 2) == 0
                                   select num).ToArray();
@@ -65,6 +67,7 @@ namespace LinqQuiz.Library
                                 orderby num descending
                                 select num).ToArray();
 
+                // Tip: Add sqare operation to LINQ statement above using `Select`
                 for (int i = 0; i < numQuery.Length; i++)
                 {
                     numQuery[i] = checked((int)Math.Pow(numQuery[i], 2));
@@ -95,6 +98,9 @@ namespace LinqQuiz.Library
                 throw new ArgumentNullException();
             }
 
+            // It would be possible to write foreach statement in a single LINQ statement.
+            // Generally: Even if you create your own `foreach`, you should consider using an array
+            // instead of a list. That would save you from having to call `ToArray` at the end.
             List<FamilySummary> list = new List<FamilySummary>();
             decimal averageAge;
             foreach (var family in families)
@@ -132,6 +138,7 @@ namespace LinqQuiz.Library
         /// </remarks>
         public static (char letter, int numberOfOccurrences)[] GetLetterStatistic(string text)
         {
+            // Tip: Prefer `var` instead of manually typing the type on the left side of the assignment.
             char[] textLetters = text.ToUpper().ToCharArray();
             List<int> letters = Enumerable.Range('A', 'Z').ToList();
             List<(char letter, int numberOfOccurences)> solution = new List<(char letter, int numberOfOccurences)>();
